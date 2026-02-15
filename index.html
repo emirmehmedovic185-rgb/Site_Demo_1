@@ -18,22 +18,13 @@
         background-color: #050505;
         color: #ffffff;
         overflow-x: hidden;
-        cursor: auto;
+        /* Masque le curseur système par défaut */
+        cursor: none;
       }
-
-      /* Uniquement pour les appareils avec une souris (Desktop) */
-      @media (hover: hover) and (pointer: fine) {
-        body {
-          cursor: none;
-        }
-        a, button, [role="button"], input, textarea, select {
-          cursor: none !important;
-        }
-        .cursor-dot, .cursor-outline {
-          display: block;
-        }
+      /* S'assure que le curseur reste masqué sur les éléments interactifs */
+      a, button, [role="button"], input, textarea, select {
+        cursor: none !important;
       }
-
       h1, h2, h3, .font-serif {
         font-family: 'Playfair Display', serif;
       }
@@ -60,7 +51,6 @@
         box-shadow: 0 0 50px -10px rgba(251, 191, 36, 0.3);
       }
       .cursor-dot {
-        display: none;
         width: 8px;
         height: 8px;
         background-color: var(--accent);
@@ -69,10 +59,9 @@
         pointer-events: none;
         z-index: 9999;
         transition: transform 0.1s ease;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%); /* Centre le point sur la pointe invisible */
       }
       .cursor-outline {
-        display: none;
         width: 40px;
         height: 40px;
         border: 1px solid rgba(251, 191, 36, 0.4);
@@ -81,7 +70,7 @@
         pointer-events: none;
         z-index: 9998;
         transition: transform 0.15s ease, width 0.3s ease, height 0.3s ease;
-        transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%); /* Centre le cercle */
       }
     </style>
     <script type="importmap">
@@ -96,7 +85,8 @@
   }
 }
 </script>
-  </head>
+  <link rel="stylesheet" href="/index.css">
+</head>
   <body>
     <div id="root"></div>
     <div class="cursor-dot" id="cursor-dot"></div>
@@ -105,29 +95,29 @@
       const dot = document.getElementById('cursor-dot');
       const outline = document.getElementById('cursor-outline');
       
-      // On n'active l'écouteur que si on n'est pas sur un appareil purement tactile
-      if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-        window.addEventListener('mousemove', (e) => {
-          dot.style.left = e.clientX + 'px';
-          dot.style.top = e.clientY + 'px';
-          outline.style.left = e.clientX + 'px';
-          outline.style.top = e.clientY + 'px';
-        });
+      window.addEventListener('mousemove', (e) => {
+        dot.style.left = e.clientX + 'px';
+        dot.style.top = e.clientY + 'px';
+        outline.style.left = e.clientX + 'px';
+        outline.style.top = e.clientY + 'px';
+      });
 
-        document.addEventListener('mouseover', (e) => {
-          if (e.target.closest('a, button, [role="button"]')) {
-            outline.style.transform = 'translate(-50%, -50%) scale(1.5)';
-            outline.style.backgroundColor = 'rgba(251, 191, 36, 0.15)';
-          }
-        });
+      // Délégation d'événements pour gérer les éléments dynamiques
+      document.addEventListener('mouseover', (e) => {
+        if (e.target.closest('a, button, [role="button"]')) {
+          outline.style.transform = 'translate(-50%, -50%) scale(1.5)';
+          outline.style.backgroundColor = 'rgba(251, 191, 36, 0.15)';
+        }
+      });
 
-        document.addEventListener('mouseout', (e) => {
-          if (e.target.closest('a, button, [role="button"]')) {
-            outline.style.transform = 'translate(-50%, -50%) scale(1)';
-            outline.style.backgroundColor = 'transparent';
-          }
-        });
-      }
+      document.addEventListener('mouseout', (e) => {
+        if (e.target.closest('a, button, [role="button"]')) {
+          outline.style.transform = 'translate(-50%, -50%) scale(1)';
+          outline.style.backgroundColor = 'transparent';
+        }
+      });
     </script>
-  </body>
+  <script type="module" src="/index.tsx"></script>
+</body>
 </html>
+
